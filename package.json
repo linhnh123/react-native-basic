@@ -8,6 +8,7 @@
   "dependencies": {
     "ddp-client": "^0.1.1",
     "react-native": "^0.21.0",
+    "react-native-geocoder": "^0.3.1",
     "react-native-maps": "^0.3.1"
   }
 }

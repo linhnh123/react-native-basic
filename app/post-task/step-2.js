@@ -3,13 +3,37 @@ import React, {
   View,
   Text,
   Image,
+  TextInput,
+  Alert,
 } from 'react-native';
 
 import MapView from 'react-native-maps';
+import RNGeocoder from 'react-native-geocoder';
 
 export default React.createClass({
+  getInitialState: function() {
+    return {
+      addressValue: '',
+    };
+  },
+
   onRegionChange(region) {
-    
+    const latLng = {
+      latitude: region.latitude,
+      longitude: region.longitude,
+    };
+    RNGeocoder.reverseGeocodeLocation(latLng, (err, data) => {
+      if (err) {
+        Alert.alert('Error', 'Can not get address');
+      } else {
+        const obj = data[0];
+        let address = '';
+        if (obj) {
+          address = obj.thoroughfare + ', ' + obj.subLocality + ', ' + obj.subAdminArea + ', ' + obj.adminArea + ', ' + obj.country;
+          this.setState({addressValue: address});
+        }
+      }
+    });
   },
 
   render() {
@@ -24,6 +48,12 @@ export default React.createClass({
             longitudeDelta: 0.0421,
           }}
           onRegionChange={this.onRegionChange}
+        />
+        <TextInput
+          style={styles.inputAddress}
+          ref="phone"
+          placeholder="Type or drag map to get address"
+          value={this.state.addressValue}
         />
         <Image style={styles.getLocationImg} source={require('../img/marker.png')} />
       </View>
@@ -47,5 +77,13 @@ const styles = StyleSheet.create({
   },
   getLocationImg: {
     marginBottom: 60,
+  },
+  inputAddress: {
+    position: 'absolute',
+    top: 20,
+    marginLeft: 30,
+    marginRight: 30,
+    backgroundColor: '#fff',
+    fontSize: 20,
   },
 });
