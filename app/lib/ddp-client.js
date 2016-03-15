@@ -1,7 +1,7 @@
 import DDPClient from 'ddp-client';
 
 const ddpClient = new DDPClient({
-  host : "localhost",
+  host : "btaskee-dev.app.btaskee.com",
   port : 80,
   ssl  : false,
   autoReconnect : true,

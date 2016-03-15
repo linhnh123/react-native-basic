@@ -5,25 +5,14 @@ import React, {
   TextInput,
   TouchableHighlight,
   Alert,
-  Navigator,
   AsyncStorage,
 } from 'react-native';
 
 import ddpClient from './lib/ddp-client';
 
-// Polyfill the process functionality needed for minimongo-cache
-global.process = require("./config/db/lib/process.polyfill");
-
 let phone, password;
 
 export default React.createClass({
-  getInitialState() {
-    return {
-      connected: false,
-      data: {},
-    }
-  },
-
   onLogin() {
     ddpClient.call("login", [{ user : { username : phone }, password : password }], (err, result) => {
       if (err) {
@@ -33,35 +22,10 @@ export default React.createClass({
           const user = Object.values(ddpClient.collections.users.items);
           if (user) {
             AsyncStorage.setItem('login', JSON.stringify(user[0]));
-            this.props.navigator.push({
-              name: 'layout',
-              message: user[0].name,
-            });
+            this.props.navigator.push({name: 'layout'});
           }
         });
       }
-    });
-  },
-
-  componentWillMount() {
-    AsyncStorage.getItem('login').then((value) => {
-      if (value) {
-        const user = JSON.parse(value);
-        this.props.navigator.push({
-          name: 'layout',
-          message: user.name,
-        });
-      }
-    }).done();
-  },
-
-  componentDidMount() {
-    ddpClient.connect((err, wasReconnect) => {
-      let connected = true;
-      if (err) {
-        connected = false;
-      }
-      this.setState({connected: connected});
     });
   },
 
@@ -74,9 +38,6 @@ export default React.createClass({
       <View style={styles.container}>
         <Text style={styles.welcome}>
           Login
-        </Text>
-        <Text style={{color: this.state.connected ? 'green' : 'red'}}>
-          {this.state.connected ? 'connected' : 'connect failed'}
         </Text>
         <TextInput
           ref="phone"
@@ -107,6 +68,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   welcome: {
     fontSize: 20,

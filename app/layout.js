@@ -1,7 +1,8 @@
 import React, {
   StyleSheet,
-  Navigator,
   View,
+  Text,
+  Navigator,
   AsyncStorage,
 } from 'react-native';
 
@@ -20,6 +21,7 @@ export default React.createClass({
   getInitialState() {
     return {
       iconLeftToolbar: require('./img/menu.png'),
+      user: null,
     };
   },
 
@@ -31,9 +33,10 @@ export default React.createClass({
   },
 
   onIconLeftClick() {
-    let numOfRoutes = this.refs.layoutNavigator.getCurrentRoutes().length;
+    let numOfRoutes = this.refs.appNavigator.getCurrentRoutes().length;
+    console.log(numOfRoutes);
     if (numOfRoutes > 1) {
-      this.refs.layoutNavigator.pop();
+      this.refs.appNavigator.pop();
       numOfRoutes--;
       if (numOfRoutes === 1) {
         this.setState({iconLeftToolbar: require('./img/menu.png')});
@@ -43,7 +46,7 @@ export default React.createClass({
 
   onSelectMenu(position) {
     if (position === 0) { // Post task
-      this.refs.layoutNavigator.push({name: 'step1'});
+      this.refs.appNavigator.push({name: 'step1'});
       this.setState({iconLeftToolbar: require('./img/back.png')})
     } else if (position === 1) { // Open map
       // this.props.navigator.push({name: 'mapUser'});
@@ -53,6 +56,14 @@ export default React.createClass({
     }
   },
 
+  componentDidMount() {
+    AsyncStorage.getItem('login').then((value) => {
+      this.setState({
+        user: value ? JSON.parse(value) : null,
+      });
+    }).done();
+  },
+
   render() {
     return (
       <View style={styles.container}>
@@ -60,7 +71,7 @@ export default React.createClass({
           style={styles.toolbar}
           navIcon={this.state.iconLeftToolbar}
           onIconClicked={this.onIconLeftClick}
-          title={'Hello, ' + this.props.route.message}
+          title={this.state.user ? 'Hello, ' + this.state.user.name : ''}
           titleColor="#fff"
           actions={[{title: 'Post task', show: 'never'},
                     {title: 'Map', show: 'never'},
@@ -68,7 +79,7 @@ export default React.createClass({
           onActionSelected={this.onSelectMenu}
         />
         <Navigator
-          ref="layoutNavigator"
+          ref="appNavigator"
           initialRoute={{ name: 'home' }}
           renderScene={this.renderScene}
           configureScene={(route) => {
@@ -86,10 +97,9 @@ export default React.createClass({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
   },
   toolbar: {
-    height: 56,
+    height: 64,
     backgroundColor: 'orange',
   },
 });
