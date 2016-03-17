@@ -29,10 +29,6 @@ export default React.createClass({
     });
   },
 
-  componentWillUnmount() {
-    ddpClient.close();
-  },
-
   onSelectedService(serviceId) {
     if (serviceId) {
       this.props.navigator.push({name: 'step2', serviceId: serviceId});

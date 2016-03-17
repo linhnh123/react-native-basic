@@ -29,10 +29,6 @@ export default React.createClass({
     });
   },
 
-  componentWillUnmount() {
-    ddpClient.close();
-  },
-
   render() {
     return (
       <View style={styles.container}>

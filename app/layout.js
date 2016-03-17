@@ -10,11 +10,13 @@ import ToolbarAndroid from 'ToolbarAndroid';
 import Home from './home';
 import Step1 from './post-task/step-1';
 import Step2 from './post-task/step-2';
+import Step3 from './post-task/step-3';
 
 var ROUTES = {
   home: Home,
   step1: Step1,
   step2: Step2,
+  step3: Step3,
 };
 
 export default React.createClass({

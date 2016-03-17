@@ -5,6 +5,7 @@ import React, {
   Image,
   TextInput,
   Alert,
+  TouchableHighlight,
 } from 'react-native';
 
 import MapView from 'react-native-maps';
@@ -36,6 +37,18 @@ export default React.createClass({
     });
   },
 
+  onNext() {
+    if (!this.state.addressValue) {
+      Alert.alert('Error', 'Please select address');
+      return;
+    }
+    const data = {
+      serviceId: this.props.route.serviceId,
+      address: this.state.addressValue,
+    };
+    this.props.navigator.push({name: 'step3', taskInfo: data});
+  },
+
   render() {
     return (
       <View style={styles.container}>
@@ -53,8 +66,11 @@ export default React.createClass({
           style={styles.inputAddress}
           ref="phone"
           placeholder="Type or drag map to get address"
-          value={this.state.addressValue}
+          defaultValue={this.state.addressValue}
         />
+        <TouchableHighlight onPress={this.onNext} style={styles.nextImg} underlayColor="#FFF">
+          <Image source={require('../img/next-24.png')} />
+        </TouchableHighlight>
         <Image style={styles.getLocationImg} source={require('../img/marker.png')} />
       </View>
     );
@@ -66,7 +82,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
   map: {
     position: 'absolute',
@@ -81,9 +96,14 @@ const styles = StyleSheet.create({
   inputAddress: {
     position: 'absolute',
     top: 20,
-    marginLeft: 30,
-    marginRight: 30,
+    marginLeft: 20,
+    marginRight: 20,
     backgroundColor: '#fff',
-    fontSize: 20,
+    fontSize: 16,
+  },
+  nextImg: {
+    position: 'absolute',
+    top: 40,
+    right: 30,
   },
 });
